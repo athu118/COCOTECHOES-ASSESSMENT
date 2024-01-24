@@ -1,0 +1,62 @@
+import java.util.*;
+public class WebTrafficAnalysis {
+static class VisitEntry {
+    int userId;
+    String timeOfDay;
+    int timeSpentMinutes;
+
+    VisitEntry(int userId, String timeOfDay, int timeSpentMinutes) {
+    this.userId = userId;
+    this.timeOfDay = timeOfDay;
+    this.timeSpentMinutes = timeSpentMinutes;
+    }
+    }
+    public static void main(String[] args) {
+    List<List<VisitEntry>> citiesData = generateWebTrafficData(5, 100);
+    String timeOfDayWithMostUsers = findTimeOfDayWithMostUsers(citiesData);
+System.out.println("Time of day with the most unique users: " + timeOfDayWithMostUsers);
+    }
+private static List<List<VisitEntry>> generateWebTrafficData(int numCities, int numEntriesPerCity) {
+    List<List<VisitEntry>> citiesData = new ArrayList<>();
+    for (int i = 0; i < numCities; i++) {
+    List<VisitEntry> cityData = new ArrayList<>();
+    for (int j = 0; j < numEntriesPerCity; j++) {
+    int userId = new Random().nextInt(30) + 1; 
+    String timeOfDay = getRandomTimeOfDay();
+    int timeSpentMinutes = new Random().nextInt(60) + 1; 
+    cityData.add(new VisitEntry(userId, timeOfDay, timeSpentMinutes));
+    }
+    citiesData.add(cityData);
+    }
+    return citiesData;
+    }
+    private static String getRandomTimeOfDay() {
+    String[] timeOfDayOptions = {"morning", "noon", "evening", "night"};
+    return timeOfDayOptions[new Random().nextInt(timeOfDayOptions.length)];
+    }
+    private static String findTimeOfDayWithMostUsers(List<List<VisitEntry>> citiesData) {
+    Map<String, Set<Integer>> timeOfDayUserMap = new HashMap<>();
+
+    for (List<VisitEntry> cityData : citiesData) {
+    for (VisitEntry entry : cityData) {
+    timeOfDayUserMap
+    .computeIfAbsent(entry.timeOfDay, k -> new HashSet<>())
+    .add(entry.userId);
+    }
+    }
+    String timeOfDayWithMostUsers = "";
+    int maxUniqueUsers = 0;
+    for (Map.Entry<String, Set<Integer>> entry : timeOfDayUserMap.entrySet()) {
+    String timeOfDay = entry.getKey();
+    int uniqueUsers = entry.getValue().size();
+
+    if (uniqueUsers > maxUniqueUsers) {
+    maxUniqueUsers = uniqueUsers;
+    timeOfDayWithMostUsers = timeOfDay;
+    }
+    }
+    return timeOfDayWithMostUsers;
+    }
+    } 
+
+
